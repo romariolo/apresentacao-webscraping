@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação: Trilha de Ciência de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white">
+
+    <section id="slide1" class="slide">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-6xl md:text-8xl font-black uppercase tracking-wider text-cyan-400">Trilha de Ciência de Dados</h1>
+            <h2 class="text-4xl md:text-6xl font-bold mt-4">Imersão</h2>
+            <p class="text-2xl md:text-3xl mt-8 text-gray-300">Programa Capacita Brasil/C-jovem</p>
+            <div class="mt-16">
+                <p class="text-xl text-gray-400">Empresa Parceira</p>
+                <img src="https://placehold.co/200x80/000000/FFFFFF?text=Atl%C3%A2ntico" alt="Logo Atlântico" class="mx-auto mt-2 rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/200x80/000000/FFFFFF?text=Logo+Indispon%C3%ADvel';">
+            </div>
+        </div>
+    </section>
+
+    <section id="slide2" class="slide bg-gray-800">
+        <div class="text-center">
+            <h2 class="text-5xl md:text-6xl font-bold text-cyan-400 mb-16">Equipe Capacita Brasil/C-jovem</h2>
+        </div>
+        <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div class="bg-gray-700 p-8 rounded-lg shadow-lg text-center"><p class="text-2xl">Jessica Caroline Lima de Abreu</p></div>
+            <div class="bg-gray-700 p-8 rounded-lg shadow-lg text-center"><p class="text-2xl">Daniel dos Santos Alves</p></div>
+            <div class="bg-gray-700 p-8 rounded-lg shadow-lg text-center"><p class="text-2xl">Francisco Janylson de Sousa Silva</p></div>
+            <div class="bg-gray-700 p-8 rounded-lg shadow-lg text-center"><p class="text-2xl">Murad Sousa Pontes</p></div>
+            <div class="bg-gray-700 p-8 rounded-lg shadow-lg text-center"><p class="text-2xl">Francisco Romário Rodrigues Lopes</p></div>
+            <div class="bg-gray-700 p-8 rounded-lg shadow-lg text-center"><p class="text-2xl">Victor Matheus</p></div>
+        </div>
+        <div class="flex justify-center items-center space-x-8 mt-16">
+            <img src="https://placehold.co/150x70/FFFFFF/000000?text=UECE" alt="Logo UECE" class="rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/150x70/FFFFFF/000000?text=Logo+Indispon%C3%ADvel';">
+            <img src="https://placehold.co/150x70/FFFFFF/000000?text=Atl%C3%A2ntico" alt="Logo Atlântico" class="rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/150x70/FFFFFF/000000?text=Logo+Indispon%C3%ADvel';">
+        </div>
+    </section>
+
+    <section id="slide3" class="slide bg-gradient-to-br from-gray-900 to-blue-900">
+        <div class="max-w-5xl mx-auto glassmorphism rounded-xl p-10 md:p-16">
+            <h2 class="text-5xl md:text-6xl font-bold text-center text-cyan-400 mb-10">Qual o nosso objetivo?</h2>
+            <p class="text-xl md:text-2xl leading-relaxed text-gray-200 mb-6">O projeto visa desenvolver uma solução automatizada para a coleta, tratamento e armazenamento de dados públicos da Revista da Propriedade Industrial (RPI), disponibilizada pelo INPI.</p>
+            <p class="text-xl md:text-2xl leading-relaxed text-gray-200">O objetivo final é criar uma base de dados estruturada e enriquecida, pronta para ser utilizada em análises exploratórias e pela aplicação de técnicas de Inteligência Artificial para identificar padrões e extrair insights valiosos sobre registros de marcas no Brasil.</p>
+        </div>
+    </section>
+
+    <section id="slide4" class="slide bg-gray-800">
+        <h2 class="text-5xl font-bold text-center text-cyan-400 mb-4">Preparação do Ambiente</h2>
+        <p class="text-xl text-center text-gray-300 mb-8 max-w-4xl">O script primeiro verifica se todas as bibliotecas necessárias estão instaladas e, caso contrário, as instala automaticamente.</p>
+        <div class="code-window">
+            <div class="code-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            </div>
+            <pre><code class="language-python">
+# verifica e instala as dependencias necessarias
+try:
+    from selenium import webdriver
+    import requests
+    import zipfile
+    import xml.etree.ElementTree as ET
+    # ... outros imports
+except ImportError as e:
+    print(f"Biblioteca não encontrada: {e}. Instalando...")
+    import subprocess
+    import sys
+
+    required_packages = [
+        'selenium', 'requests', 'lxml'
+    ]
+    for package in required_packages:
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", package]
+        )
+            </code></pre>
+        </div>
+    </section>
+
+    <section id="slide5" class="slide bg-gradient-to-br from-gray-900 to-blue-900">
+        <h2 class="text-5xl font-bold text-center text-cyan-400 mb-4">Download e Extração dos Dados</h2>
+        <p class="text-xl text-center text-gray-300 mb-8 max-w-4xl">Uma função dedicada para baixar os arquivos .zip do site, extrair o conteúdo XML e gerenciar os arquivos.</p>
+        <div class="code-window">
+            <div class="code-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            </div>
+            <pre><code class="language-python">
+def download_and_extract_zip(url, folder='downloads_xml'):
+    zip_filename = os.path.basename(urlparse(url).path)
+    xml_path = os.path.join(folder, f"{zip_filename.replace('.zip', '')}.xml")
+
+    if os.path.exists(xml_path):
+        print(f"Arquivo {xml_path} já existe.")
+        return False
+
+    try:
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+
+        os.makedirs(folder, exist_ok=True)
+        zip_path = os.path.join(folder, zip_filename)
+
+        with open(zip_path, 'wb') as f:
+            f.write(response.content)
+
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(folder)
+
+        os.remove(zip_path)
+        return True
+    except Exception as e:
+        print(f"Erro ao processar {url}: {e}")
+        return False
+            </code></pre>
+        </div>
+    </section>
+
+    <section id="slide6" class="slide bg-gray-800">
+        <h2 class="text-5xl font-bold text-center text-cyan-400 mb-4">Parsing do XML para JSON</h2>
+        <p class="text-xl text-center text-gray-300 mb-8 max-w-4xl">Esta é a função principal que lê o arquivo XML complexo e o transforma em um dicionário Python limpo e estruturado.</p>
+        <div class="code-window">
+            <div class="code-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            </div>
+            <pre><code class="language-python">
+def parse_xml_to_json(xml_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    processos_json = []
+
+    for processo in root.findall('processo'):
+        protocolo_id = int(processo.get('numero'))
+        titular = processo.findtext('titulares/titular/nome-razao-social', '')
+        marca_nome = processo.findtext('marca/nome', '')
+        # ... extração de outros campos ...
+
+        processo_data = {
+            "protocolo_id": protocolo_id,
+            "titular": titular,
+            "elemento_nominativo": marca_nome,
+            # ... outros campos ...
+        }
+        processos_json.append(processo_data)
+    
+    return processos_json
+            </code></pre>
+        </div>
+    </section>
+
+    <section id="slide7" class="slide bg-gradient-to-br from-gray-900 to-blue-900">
+        <h2 class="text-5xl font-bold text-center text-cyan-400 mb-4">Extração do PDF de Classificação</h2>
+        <p class="text-xl text-center text-gray-300 mb-8 max-w-4xl">Um segundo script usa 'pdfplumber' para ler a tabela oficial do INPI e criar nosso dicionário de referência.</p>
+        <div class="code-window">
+            <div class="code-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            </div>
+            <pre><code class="language-python">
+def extract_classes_from_pdf(pdf_path):
+    produtos = []
+    servicos = []
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            tables = page.extract_tables()
+            for table in tables:
+                for row in table:
+                    # ... validação e limpeza de dados da linha ...
+                    code_num = int(row[0])
+                    descricao = row[1]
+                    if 1 <= code_num <= 34:
+                        produtos.append({"codigo": code_num, "descricao": descricao})
+                    elif code_num >= 35:
+                        servicos.append({"codigo": code_num, "descricao": descricao})
+    return {"produtos": produtos, "servicos": servicos}
+            </code></pre>
+        </div>
+    </section>
+    
+    <section id="slide8" class="slide bg-gray-800">
+        <div class="max-w-6xl mx-auto w-full">
+            <h2 class="text-5xl md:text-6xl font-bold text-center text-cyan-400 mb-16">Ferramentas do Projeto</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 text-center">
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Linguagem</h3>
+                    <p class="mt-2 text-xl">Python</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Web Scraping</h3>
+                    <p class="mt-2 text-xl">Selenium, Requests</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Extração de PDF</h3>
+                    <p class="mt-2 text-xl">pdfplumber</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Manipulação</h3>
+                    <p class="mt-2 text-xl">xml.etree, json, zipfile</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Banco de Dados</h3>
+                    <p class="mt-2 text-xl">MongoDB</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Conexão BD</h3>
+                    <p class="mt-2 text-xl">MongoEngine</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-cyan-400">Agendamento</h3>
+                    <p class="mt-2 text-xl">Schedule</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="slide9" class="slide bg-gradient-to-br from-gray-900 to-blue-900">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            
+            <div class="text-left">
+                <h2 class="text-6xl font-black text-cyan-400 mb-4">Próximos Passos e Evolução</h2>
+                <div class="space-y-6 mt-10">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Análise Preditiva</h3>
+                        <p class="text-xl text-gray-300">Implementar modelos de Machine Learning para prever tendências de registro de marcas.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Dashboard Interativo</h3>
+                        <p class="text-xl text-gray-300">Desenvolver um painel de B.I. (Power BI/Looker) para visualização dinâmica dos dados.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Sistema de Alertas</h3>
+                        <p class="text-xl text-gray-300">Criar um serviço de notificação para monitorar marcas concorrentes em tempo real.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Escalabilidade</h3>
+                        <p class="text-xl text-gray-300">Migrar a arquitetura para um ambiente em nuvem (Cloud, AWS DynamoDB) para garantir performance e disponibilidade.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center justify-center">
+                <img src="/rocket-6844760_960_720.png" alt="Foguete decolando" class="w-full max-w-sm">
+            </div>
+
+        </div>
+    </section>
+
+    <section id="slide10" class="slide bg-gray-800">
+        <div class="text-center">
+            <h2 class="text-5xl md:text-6xl font-bold text-cyan-400 mb-16">Agradecimentos</h2>
+        </div>
+        <div class="max-w-4xl w-full flex flex-wrap justify-center items-center gap-12">
+            <img src="https://placehold.co/180x90/FFFFFF/000000?text=MCTI" alt="Logo MCTI" class="rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/180x90/FFFFFF/000000?text=Logo+Indispon%C3%ADvel';">
+            <img src="https://placehold.co/180x90/FFFFFF/000000?text=Softex" alt="Logo Softex" class="rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/180x90/FFFFFF/000000?text=Logo+Indispon%C3%ADvel';">
+            <img src="https://placehold.co/240x100/FFFFFF/000000?text=Governo+Federal" alt="Logo Governo Federal" class="rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/240x100/FFFFFF/000000?text=Logo+Indispon%C3%ADvel';">
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
