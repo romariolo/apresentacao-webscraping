@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Pipeline: Automação de Dados INPI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A aplicação foi estruturada como um fluxograma interativo para representar visualmente o pipeline de dados descrito no relatório. Esta abordagem transforma uma explicação linear em uma experiência exploratória. O usuário tem uma visão geral imediata do processo e pode aprofundar-se em cada etapa clicando nela. Esta estrutura foi escolhida por ser a mais intuitiva para entender um processo sequencial, melhorando a usabilidade e o engajamento em comparação com a simples leitura de slides. A navegação é centrada no próprio diagrama. -->
+    <!-- Visualization & Content Choices: O principal elemento visual é o próprio fluxograma do processo, construído com HTML e Tailwind CSS para representar as etapas e suas conexões. A interatividade é central: clicar em uma etapa revela informações detalhadas (Descrição, Tecnologias, Lógica). Para a etapa de "Transformação", uma comparação visual lado a lado de 'XML Bruto' vs 'JSON Limpo' é usada para demonstrar o valor da transformação de dados de forma concreta. Nenhum gráfico (Chart.js) foi usado, pois o relatório descreve um processo e não dados quantitativos, tornando um fluxograma a visualização mais apropriada. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfaf7;
+            color: #374151;
+            font-size: 16px;
+        }
+        .pipeline-stage {
+            transition: all 0.3s ease;
+            border-width: 2px;
+            border-style: solid;
+        }
+        .pipeline-stage.active {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #c8a2c8; /* Acentuação lilás sutil */
+            background-color: #ffffff;
+        }
+        .pipeline-connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            margin: 0 8px;
+        }
+        .pipeline-connector::after {
+            content: '→';
+            font-size: 2.5rem;
+            color: #d1d5db;
+        }
+        @media (max-width: 1023px) {
+            .pipeline-connector::after {
+                content: '↓';
+                font-size: 2rem;
+            }
+        }
+        .details-tab.active {
+            background-color: #c8a2c8;
+            color: white;
+            border-color: #c8a2c8;
+        }
+        .details-tab {
+             transition: all 0.2s ease-in-out;
+             font-size: 1rem;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .prose {
+            font-size: 1.125rem;
+            line-height: 1.75;
+        }
+         .prose strong {
+            color: #1f2937;
+         }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-[#6a5acd]">Pipeline de Automação de Dados do INPI</h1>
+            <p class="mt-2 text-xl text-gray-600">Uma visão interativa do fluxo de coleta, processamento e armazenamento.</p>
+        </header>
+
+        <main>
+            <section id="pipeline-container" class="mb-10">
+                <h2 class="text-2xl font-bold text-center mb-8 text-gray-700">Explore as Etapas do Processo</h2>
+                <div id="pipeline-diagram" class="flex flex-col lg:flex-row items-center justify-center w-full">
+                    
+                    <div id="stage-coleta" class="pipeline-stage cursor-pointer bg-white rounded-lg p-6 shadow-md border-gray-200 w-full sm:w-4/5 md:w-3/5 lg:w-1/5 text-center mb-4 lg:mb-0">
+                        <span class="text-4xl">📥</span>
+                        <h3 class="font-semibold text-lg mt-2">Coleta e Extração</h3>
+                        <p class="text-base text-gray-500">O robô busca e baixa os dados.</p>
+                    </div>
+
+                    <div class="pipeline-connector"></div>
+
+                    <div id="stage-transformacao" class="pipeline-stage cursor-pointer bg-white rounded-lg p-6 shadow-md border-gray-200 w-full sm:w-4/5 md:w-3/5 lg:w-1/5 text-center mb-4 lg:mb-0">
+                        <span class="text-4xl">🔄</span>
+                        <h3 class="font-semibold text-lg mt-2">Processamento</h3>
+                        <p class="text-base text-gray-500">Transforma XML em JSON.</p>
+                    </div>
+
+                    <div class="pipeline-connector"></div>
+
+                    <div id="stage-armazenamento" class="pipeline-stage cursor-pointer bg-white rounded-lg p-6 shadow-md border-gray-200 w-full sm:w-4/5 md:w-3/5 lg:w-1/5 text-center mb-4 lg:mb-0">
+                        <span class="text-4xl">🗄️</span>
+                        <h3 class="font-semibold text-lg mt-2">Armazenamento</h3>
+                        <p class="text-base text-gray-500">Salva os dados no banco.</p>
+                    </div>
+
+                    <div class="pipeline-connector"></div>
+                    
+                    <div id="stage-automacao" class="pipeline-stage cursor-pointer bg-white rounded-lg p-6 shadow-md border-gray-200 w-full sm:w-4/5 md:w-3/5 lg:w-1/5 text-center">
+                        <span class="text-4xl">⏰</span>
+                        <h3 class="font-semibold text-lg mt-2">Automação</h3>
+                        <p class="text-base text-gray-500">Executa o fluxo diariamente.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="details-section" class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 min-h-[400px]">
+                <div id="details-panel">
+                    <!-- O conteúdo será inserido aqui pelo JavaScript -->
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 text-base text-gray-500">
+            <p>Aplicação interativa gerada para visualização de processo.</p>
+        </footer>
+    </div>
+
+    <script>
+        const pipelineData = {
+            'coleta': {
+                title: 'Fase 1: Coleta e Extração de Dados',
+                content: {
+                    descricao: "O processo começa com um robô (scraper) que acessa automaticamente o portal da Revista da Propriedade Industrial (RPI). Sua principal função é identificar e baixar os arquivos semanais que contêm os dados de processos de marcas. Para otimizar o processo, o robô verifica se um arquivo já foi baixado anteriormente, evitando trabalho redundante e economizando recursos. Após baixar o arquivo compactado (.zip), ele extrai o conteúdo (um arquivo XML) e descarta o .zip para manter o ambiente de trabalho organizado.",
+                    tecnologias: "<strong>Selenium:</strong> para automação do navegador e web scraping.<br><strong>Requests:</strong> para realizar o download dos arquivos de forma eficiente.<br><strong>Python OS & ZipFile:</strong> para manipulação de arquivos e extração de conteúdo.",
+                    logica: `<pre class="code-block"><code>def collecting_data_routine():
+    url = "https://revistas.inpi.gov.br/rpi/"
+    driver.get(url)
+
+    rows = driver.find_elements(By.XPATH, "...")
+    
+    for row in rows:
+        try:
+            zip_link = row.find_element(By.XPATH, "...").get_attribute('href')
+            if zip_link and zip_link.endswith('.zip'):
+                if download_and_extract_zip(zip_link):
+                    # Processa o XML correspondente
+                    ...
+        except Exception as e:
+            print(f"Erro ao processar linha: {e}")
+            
+    driver.quit()</code></pre>`
+                }
+            },
+            'transformacao': {
+                title: 'Fase 2: Processamento e Transformação',
+                content: {
+                    descricao: "Os dados extraídos do INPI vêm em formato XML, que é verboso e complexo. Nesta fase, o sistema lê o arquivo XML e o 'traduz' para o formato JSON, que é muito mais leve e fácil de manipular. Durante essa transformação, apenas os campos de interesse são extraídos (como número do protocolo, titular, classe, etc.). Além disso, o sistema realiza uma limpeza, removendo campos vazios e padronizando informações para garantir a qualidade e consistência dos dados antes de serem armazenados.",
+                    tecnologias: "<strong>XML ElementTree:</strong> para parsear (ler) a estrutura do arquivo XML.<br><strong>JSON:</strong> para estruturar e salvar os dados de forma limpa e organizada.",
+                    logica: `<pre class="code-block"><code>def parse_xml_to_json(xml_file, json_folder='json_output'):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    processos_json = []
+
+    for processo in root.findall('processo'):
+        processo_data = {
+            "protocolo_id": int(processo.get('numero')),
+            "titular": processo.findtext('titulares/titular/...') or '',
+            # ... extração de outros campos ...
+        }
+        processos_json.append(processo_data)
+
+    # Gera o arquivo JSON
+    with open(json_path, 'w', encoding='utf-8') as f:
+        json.dump(processos_json, f, ensure_ascii=False, indent=4)
+    
+    return json_path</code></pre>`
+                }
+            },
+            'armazenamento': {
+                title: 'Fase 3: Armazenamento Inteligente',
+                content: {
+                    descricao: "Com os dados já limpos e em formato JSON, a etapa final é salvá-los no banco de dados. O sistema utiliza uma lógica de 'upsert', que é uma combinação de 'update' (atualizar) e 'insert' (inserir). Para cada processo, ele primeiro verifica se já existe um registro com o mesmo \`protocolo_id\`. Se existir, ele apenas atualiza os dados com as informações mais recentes. Se não existir, ele cria um novo registro. Essa abordagem garante que a base de dados permaneça consistente, sem duplicatas e sempre atualizada.",
+                    tecnologias: "<strong>MongoDB:</strong> banco de dados NoSQL flexível, ideal para documentos JSON.<br><strong>Beanie (ODM):</strong> para modelar os dados em Python e interagir com o MongoDB de forma segura e estruturada.<br><strong>Motor:</strong> driver assíncrono para o MongoDB, garantindo alta performance.",
+                    logica: `<pre class="code-block"><code>async def save_or_update_by_batch():
+    client = AsyncIOMotorClient(...)
+    await init_beanie(database=client.protocolos, document_models=[Protocolo])
+
+    for arquivo in os.listdir(DIR_JSON):
+        # ... abre o arquivo json
+        for dados in protocolos:
+            protocolo_existente = await Protocolo.find_one(
+                Protocolo.protocolo_id == dados["protocolo_id"]
+            )
+
+            if protocolo_existente:
+                # Atualiza o documento existente
+                await protocolo_existente.set(dados)
+            else:
+                # Insere um novo documento
+                novo_protocolo = Protocolo(**dados)
+                await novo_protocolo.insert()
+        os.remove(arquivo_path)</code></pre>`
+                }
+            },
+            'automacao': {
+                title: 'Fase 4: Automação e Orquestração',
+                content: {
+                    descricao: "Para que todo o pipeline funcione sem intervenção manual, um agendador (`scheduler`) foi implementado. Ele é configurado para executar todo o fluxo de trabalho — da coleta ao armazenamento — automaticamente. A rotina é agendada para rodar todos os dias úteis ao meio-dia, garantindo que a base de dados seja constantemente alimentada com as publicações mais recentes do INPI. A função `main` atua como o 'maestro', chamando cada fase na ordem correta e garantindo que o sistema funcione de forma coesa e confiável.",
+                    tecnologias: "<strong>Schedule:</strong> biblioteca Python para agendamento de tarefas de forma simples e declarativa.",
+                    logica: `<pre class="code-block"><code>import schedule
+from time import sleep
+
+def dia_util():
+    if date.today().weekday() < 5: # 0-4 são Seg-Sex
+        main()
+
+# Agenda a tarefa para ser executada todo dia às 12:00
+schedule.every().day.at("12:00").do(dia_util)
+
+while True:
+    schedule.run_pending()
+    sleep(60) # Verifica a cada minuto se há tarefas a executar
+</code></pre>`
+                }
+            }
+        };
+
+        const detailsPanel = document.getElementById('details-panel');
+        const stages = document.querySelectorAll('.pipeline-stage');
+
+        function generateTabs(stageId) {
+            const tabs = Object.keys(pipelineData[stageId].content);
+            let tabsHtml = '<div class="flex border-b border-gray-200 mb-6">';
+            tabs.forEach((tab, index) => {
+                tabsHtml += `<button class="details-tab py-2 px-6 font-semibold text-gray-500 border-b-2 border-transparent ${index === 0 ? 'active' : ''}" data-stage="${stageId}" data-tab="${tab}">${tab.charAt(0).toUpperCase() + tab.slice(1)}</button>`;
+            });
+            tabsHtml += '</div><div id="tab-content"></div>';
+            return tabsHtml;
+        }
+
+        function updateDetails(stageId, activeTab = null) {
+            const data = pipelineData[stageId];
+            if (!data) return;
+
+            let contentHtml = `<h2 class="text-3xl font-bold text-gray-800 mb-6">${data.title}</h2>`;
+            contentHtml += generateTabs(stageId);
+            detailsPanel.innerHTML = contentHtml;
+
+            const firstTab = activeTab || Object.keys(data.content)[0];
+            updateTabContent(stageId, firstTab);
+
+            document.querySelectorAll('.details-tab').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const stage = e.target.dataset.stage;
+                    const tab = e.target.dataset.tab;
+                    updateTabContent(stage, tab);
+                });
+            });
+        }
+        
+        function updateTabContent(stageId, tabId){
+             const content = pipelineData[stageId].content[tabId];
+             document.getElementById('tab-content').innerHTML = `<div class="prose max-w-none text-gray-700">${content}</div>`;
+             
+             document.querySelectorAll('.details-tab').forEach(button => {
+                button.classList.remove('active');
+             });
+             document.querySelector(`.details-tab[data-tab='${tabId}']`).classList.add('active');
+        }
+
+        stages.forEach(stage => {
+            stage.addEventListener('click', () => {
+                const stageId = stage.id.replace('stage-', '');
+                
+                stages.forEach(s => s.classList.remove('active'));
+                stage.classList.add('active');
+                
+                updateDetails(stageId);
+            });
+        });
+
+        // Estado inicial
+        document.getElementById('stage-coleta').classList.add('active');
+        updateDetails('coleta');
+    </script>
+</body>
+</html>
