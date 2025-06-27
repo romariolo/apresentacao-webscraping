@@ -236,8 +236,61 @@ def parse_xml_to_json(xml_file):
         </div>
     </section>
 
-    <!-- Slide 6: Ferramentas -->
-    <section id="slide6" class="slide bg-gray-800">
+    <!-- Slide 6: Rotinização -->
+    <section id="slide6" class="slide bg-gray-900">
+        <div class="text-center w-full max-w-6xl">
+            <h2 class="text-5xl font-bold text-cyan-400 mb-4">Passo 4: Rotinização - Nosso Robô Trabalhando Sozinho!</h2>
+            <p class="analogy">Imagine que você tem um assistente super obediente que, todos os dias, no mesmo horário, realiza uma tarefa para você, sem precisar que você lembre. Isso é a rotinização! É como programar um alarme para seu robô de dados, dizendo: "Às 12h, todos os dias úteis, vá e faça o seu trabalho!".</p>
+        </div>
+        <div class="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
+            <div class="code-window">
+                <div class="code-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                <pre><code class="language-python">
+import schedule # Ferramenta para agendar tarefas
+import time     # Ferramenta para 'pausar' o robô
+from datetime import date # Para saber que dia é hoje
+
+# Supondo que 'main' seja a função principal que executa
+# todos os passos do seu projeto (baixar, extrair, etc.)
+from main_project_script import main # Mude 'main_project_script' para o nome do seu arquivo principal
+
+def run_daily_task():
+    """
+    Função que será executada pelo agendador.
+    Verifica se é um dia de semana antes de rodar a função 'main'.
+    """
+    # Se for de segunda a sexta (0 = segunda, 4 = sexta)
+    if date.today().weekday() < 5: 
+        print("É dia de semana! Executando a jornada de dados...")
+        main() # Chama a função principal do seu projeto
+    else:
+        print("É fim de semana. O robô está descansando!")
+
+# Agendando a tarefa:
+# TODO: Defina o horário e a frequência ideal para o seu projeto.
+# Exemplo: Executar a função 'run_daily_task' todos os dias às 12:00.
+schedule.every().day.at("12:00").do(run_daily_task) 
+
+print("Robô agendado! Aguardando o próximo ciclo...")
+
+# Loop principal para manter o agendador rodando
+while True:
+    # Verifica se há alguma tarefa agendada para ser executada
+    schedule.run_pending()
+    # Espera 1 minuto antes de verificar novamente (para não consumir muita energia)
+    time.sleep(60) 
+                </code></pre>
+            </div>
+            <div class="explanation-box">
+                <h3 class="text-2xl font-bold text-white mb-4">Como funciona a Rotinização?</h3>
+                <p class="text-lg text-gray-300">A rotinização é como ter um lembrete digital que nunca esquece. Usamos uma biblioteca chamada <code class="text-pink-400">schedule</code>. Com ela, dizemos ao Python: "Ei, quando for 12:00 do meio-dia, todos os dias, execute a função <code class="text-pink-400">run_daily_task</code>".</p>
+                <p class="text-lg text-gray-300 mt-2">A função <code class="text-pink-400">run_daily_task</code> é inteligente: ela verifica se é um dia útil (de segunda a sexta) antes de iniciar a "jornada de dados" (que seria a sua função <code class="text-pink-400">main()</code>, que agrupa os passos de baixar, extrair, etc.). O comando <code class="text-pink-400">time.sleep(60)</code> faz com que o robô "durma" por 60 segundos entre uma verificação e outra, economizando recursos enquanto espera a próxima tarefa agendada. Isso é super útil para manter o seu projeto sempre atualizado sem que você precise fazer nada manualmente!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Ferramentas -->
+    <section id="slide7" class="slide bg-gray-800">
         <div class="max-w-6xl mx-auto w-full text-center">
             <h2 class="text-5xl md:text-6xl font-bold text-cyan-400 mb-16">Nossas Ferramentas em Detalhes</h2>
             <div class="grid md:grid-cols-2 gap-8 text-left">
@@ -261,8 +314,8 @@ def parse_xml_to_json(xml_file):
         </div>
     </section>
 
-    <!-- Slide 7: Próximos Passos -->
-    <section id="slide7" class="slide">
+    <!-- Slide 8: Próximos Passos -->
+    <section id="slide8" class="slide">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div class="text-left">
                 <h2 class="text-6xl font-black text-cyan-400 mb-4">O Futuro do Projeto</h2>
@@ -282,13 +335,13 @@ def parse_xml_to_json(xml_file):
                 </div>
             </div>
             <div class="hidden md:flex items-center justify-center">
-                <img src="rocket-6844760_960_720.png" alt="Foguete decolando" class="w-full max-w-sm">
+                <img src="https://placehold.co/400x400/1e293b/a8dadc?text=Foguete+Decolando" alt="Foguete decolando" class="w-full max-w-sm rounded-lg shadow-lg">
             </div>
         </div>
     </section>
 
-    <!-- Slide 8: Agradecimentos e Equipe -->
-    <section id="slide8" class="slide bg-gray-800">
+    <!-- Slide 9: Agradecimentos e Equipe -->
+    <section id="slide9" class="slide bg-gray-800">
         <div class="text-center">
             <h2 class="text-5xl md:text-6xl font-bold text-cyan-400 mb-10">Equipe e Apoiadores</h2>
         </div>
