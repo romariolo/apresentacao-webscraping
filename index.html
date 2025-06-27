@@ -236,10 +236,103 @@ def parse_xml_to_json(xml_file):
         </div>
     </section>
 
-    <!-- Slide 6: Rotinização -->
-    <section id="slide6" class="slide bg-gray-900">
+    <!-- Slide 6: Passo 4: Classificando as Marcas (Treinando o Robô) -->
+    <section id="slide6" class="slide bg-gray-800">
         <div class="text-center w-full max-w-6xl">
-            <h2 class="text-5xl font-bold text-cyan-400 mb-4">Passo 4: Rotinização - Nosso Robô Trabalhando Sozinho!</h2>
+            <h2 class="text-5xl font-bold text-cyan-400 mb-4">Passo 4: Classificando as Marcas (Treinando o Robô)</h2>
+            <p class="analogy">Imagine ensinar um filho a identificar diferentes tipos de frutas. Primeiro, você mostra várias frutas e diz o nome de cada uma. É isso que estamos fazendo aqui: mostrando ao nosso robô exemplos de marcas e suas categorias para que ele aprenda a classificá-las.</p>
+        </div>
+        <div class="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
+            <div class="code-window">
+                <div class="code-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                <pre><code class="language-python">
+import json
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+
+# Carregando os dados de classes (Exemplo de estrutura)
+# Em um cenário real, 'data.json' conteria as descrições
+# e códigos de produtos/serviços para treinamento.
+# Para este exemplo, usamos um mock para ilustrar a estrutura.
+data = {
+    "produtos": [
+        {"codigo": "01", "descricao": "Substâncias químicas, colas, adubos, etc."},
+        {"codigo": "02", "descricao": "Tintas, vernizes, corantes, resinas, etc."}
+    ],
+    "servicos": [
+        {"codigo": "35", "descricao": "Propaganda; gestão de negócios; administração de negócios; funções de escritório."},
+        {"codigo": "36", "descricao": "Seguros; negócios financeiros; negócios monetários; negócios imobiliários."}
+    ]
+}
+
+# Preparando os dados para o treinamento
+classes = data['produtos'] + data['servicos']
+descricoes = [item['descricao'] for item in classes]
+rotulos = [item['codigo'] for item in classes]
+
+# Criando um 'pipeline' para o modelo de classificação
+# 1. TfidfVectorizer: Transforma o texto em números que o computador entende.
+#    Ele dá "peso" às palavras importantes.
+# 2. MultinomialNB: É o algoritmo de classificação que aprende a associar
+#    as descrições numéricas aos rótulos (códigos de classe).
+model = make_pipeline(TfidfVectorizer(), MultinomialNB())
+
+# Treinando o modelo com as descrições e seus rótulos correspondentes
+model.fit(descricoes, rotulos)
+
+print("Modelo de classificação treinado com sucesso!")
+                </code></pre>
+            </div>
+            <div class="explanation-box">
+                <h3 class="text-2xl font-bold text-white mb-4">O que este código faz?</h3>
+                <p class="text-lg text-gray-300">Este é o "cérebro" do nosso robô de classificação! Ele usa a biblioteca <code class="text-pink-400">scikit-learn</code>, super famosa em Inteligência Artificial. O <code class="text-pink-400">TfidfVectorizer</code> pega os textos das descrições e os transforma em "códigos numéricos" que o computador consegue processar, dando mais importância às palavras que realmente importam. Em seguida, o <code class="text-pink-400">MultinomialNB</code> (um tipo de algoritmo de Machine Learning) "aprende" a associar esses códigos numéricos às classes corretas. O resultado é um modelo inteligente pronto para classificar novas marcas!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Passo 5: Classificando Automaticamente (O Robô em Ação!) -->
+    <section id="slide7" class="slide">
+        <div class="text-center w-full max-w-6xl">
+            <h2 class="text-5xl font-bold text-cyan-400 mb-4">Passo 5: Classificando Automaticamente (O Robô em Ação!)</h2>
+            <p class="analogy">Depois de ensinar, é hora de testar! Agora, basta dar ao nosso robô uma nova fruta (uma nova descrição de marca) e ele, com base no que aprendeu, nos dirá qual tipo de fruta (qual categoria de marca) ela é.</p>
+        </div>
+        <div class="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
+            <div class="code-window">
+                <div class="code-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                <pre><code class="language-python">
+# É necessário ter o 'model' treinado do slide anterior
+# Se este código fosse executado separadamente, o modelo precisaria ser carregado.
+# Exemplo: from previous_script import model
+
+# Uma nova descrição de marca que queremos classificar
+input_text = "produção de filmes e vídeos publicitários"
+
+# O modelo prevê a classe para a nova descrição
+# O [0] serve para pegar apenas o primeiro resultado, já que 'predict' retorna uma lista.
+predicted_class = model.predict([input_text])[0]
+
+print(f"Descrição da marca: \"{input_text}\"")
+print(f"Classe prevista: {predicted_class}")
+
+# Exemplo de uso de outro input:
+input_text_2 = "serviços de consultoria financeira"
+predicted_class_2 = model.predict([input_text_2])[0]
+print(f"Descrição da marca: \"{input_text_2}\"")
+print(f"Classe prevista: {predicted_class_2}")
+                </code></pre>
+            </div>
+            <div class="explanation-box">
+                <h3 class="text-2xl font-bold text-white mb-4">O que este código faz?</h3>
+                <p class="text-lg text-gray-300">Aqui vemos o resultado prático do treinamento! Com o modelo já "inteligente", podemos passar uma nova descrição de marca (como "propaganda" ou "serviços de consultoria financeira"). O comando <code class="text-pink-400">model.predict([input_text])</code> faz a mágica: ele analisa o texto, compara com o que aprendeu e nos diz a qual categoria (número da classe) aquela descrição mais se encaixa. É o seu robô classificando marcas automaticamente!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Rotinização -->
+    <section id="slide8" class="slide bg-gray-900">
+        <div class="text-center w-full max-w-6xl">
+            <h2 class="text-5xl font-bold text-cyan-400 mb-4">Passo 6: Rotinização - Nosso Robô Trabalhando Sozinho!</h2>
             <p class="analogy">Imagine que você tem um assistente super obediente que, todos os dias, no mesmo horário, realiza uma tarefa para você, sem precisar que você lembre. Isso é a rotinização! É como programar um alarme para seu robô de dados, dizendo: "Às 12h, todos os dias úteis, vá e faça o seu trabalho!".</p>
         </div>
         <div class="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
@@ -251,7 +344,9 @@ import time     # Ferramenta para 'pausar' o robô
 from datetime import date # Para saber que dia é hoje
 
 # Supondo que 'main' seja a função principal que executa
-# todos os passos do seu projeto (baixar, extrair, etc.)
+# todos os passos do seu projeto (baixar, extrair, classificar, etc.)
+# Você precisaria consolidar os passos anteriores em uma função 'main'
+# dentro do seu script principal, por exemplo, 'main_project_script.py'.
 from main_project_script import main # Mude 'main_project_script' para o nome do seu arquivo principal
 
 def run_daily_task():
@@ -284,13 +379,13 @@ while True:
             <div class="explanation-box">
                 <h3 class="text-2xl font-bold text-white mb-4">Como funciona a Rotinização?</h3>
                 <p class="text-lg text-gray-300">A rotinização é como ter um lembrete digital que nunca esquece. Usamos uma biblioteca chamada <code class="text-pink-400">schedule</code>. Com ela, dizemos ao Python: "Ei, quando for 12:00 do meio-dia, todos os dias, execute a função <code class="text-pink-400">run_daily_task</code>".</p>
-                <p class="text-lg text-gray-300 mt-2">A função <code class="text-pink-400">run_daily_task</code> é inteligente: ela verifica se é um dia útil (de segunda a sexta) antes de iniciar a "jornada de dados" (que seria a sua função <code class="text-pink-400">main()</code>, que agrupa os passos de baixar, extrair, etc.). O comando <code class="text-pink-400">time.sleep(60)</code> faz com que o robô "durma" por 60 segundos entre uma verificação e outra, economizando recursos enquanto espera a próxima tarefa agendada. Isso é super útil para manter o seu projeto sempre atualizado sem que você precise fazer nada manualmente!</p>
+                <p class="text-lg text-gray-300 mt-2">A função <code class="text-pink-400">run_daily_task</code> é inteligente: ela verifica se é um dia útil (de segunda a sexta) antes de iniciar a "jornada de dados" (que seria a sua função <code class="text-pink-400">main()</code>, que agrupa os passos de baixar, extrair, classificar, etc.). O comando <code class="text-pink-400">time.sleep(60)</code> faz com que o robô "durma" por 60 segundos entre uma verificação e outra, economizando recursos enquanto espera a próxima tarefa agendada. Isso é super útil para manter o seu projeto sempre atualizado sem que você precise fazer nada manualmente!</p>
             </div>
         </div>
     </section>
 
-    <!-- Slide 7: Ferramentas -->
-    <section id="slide7" class="slide bg-gray-800">
+    <!-- Slide 9: Ferramentas -->
+    <section id="slide9" class="slide bg-gray-800">
         <div class="max-w-6xl mx-auto w-full text-center">
             <h2 class="text-5xl md:text-6xl font-bold text-cyan-400 mb-16">Nossas Ferramentas em Detalhes</h2>
             <div class="grid md:grid-cols-2 gap-8 text-left">
@@ -314,8 +409,8 @@ while True:
         </div>
     </section>
 
-    <!-- Slide 8: Próximos Passos -->
-    <section id="slide8" class="slide">
+    <!-- Slide 10: Próximos Passos -->
+    <section id="slide10" class="slide">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div class="text-left">
                 <h2 class="text-6xl font-black text-cyan-400 mb-4">O Futuro do Projeto</h2>
@@ -340,8 +435,8 @@ while True:
         </div>
     </section>
 
-    <!-- Slide 9: Agradecimentos e Equipe -->
-    <section id="slide9" class="slide bg-gray-800">
+    <!-- Slide 11: Agradecimentos e Equipe -->
+    <section id="slide11" class="slide bg-gray-800">
         <div class="text-center">
             <h2 class="text-5xl md:text-6xl font-bold text-cyan-400 mb-10">Equipe e Apoiadores</h2>
         </div>
